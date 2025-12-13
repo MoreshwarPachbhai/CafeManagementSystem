@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!-- 1. Added "xmlns:th" for Thymeleaf -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grilled Login</title>
+    <!-- Your CSS path is unchanged -->
+    <link rel="stylesheet" href="/css/login2.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="flex-container">
+        <!--<img src="/Logo1.png" alt="Logo" class="logo_image"-->
+        <div class="left-panel"></div>
+
+        <div class="right-panel">
+            <div class="login-form">
+                
+                <!-- 
+                  2. Updated <form> tag:
+                  - Removed id="loginForm"
+                  - Added th:action="@{/login-check}" and method="post"
+                -->
+                <form th:action="@{/login-check}" method="post">
+                    
+                    <!-- 
+                      3. Replaced old errorDiv with Spring Security's error messages
+                    -->
+                    <div th:if="${param.error}" class="error-message">
+                        Invalid username or password.
+                    </div>
+                    <div th:if="${param.logout}" class="success-message">
+                        You have been logged out.
+                    </div>
+
+                    
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <!-- name="username" is correct and required -->
+                        <input type="text" id="username" name="username" placeholder="Enter Username" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Password</label>
+                        <!-- name="password" is correct and required -->
+                        <input type="password" id="password" name="password" placeholder="Enter Password" required>
+                    </div>
+
+                    <button type="submit">Login</button>
+
+                    <p class="forgot-password">
+                        Forgotten your password? <a th:href="@{/reset_password}">Reset Password</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <img src="/CLUB SANDWICH 1.png" alt="Sandwich" class="split_image">
+    </div>
+
+    <!-- 
+      4. REMOVED the entire <script> block.
+      Spring Security now handles the form submission automatically.
+    -->
+
+</body>
+</html>
+

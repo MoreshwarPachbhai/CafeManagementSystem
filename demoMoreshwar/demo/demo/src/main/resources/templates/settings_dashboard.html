@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script>
+    (function() {
+    try {
+      // apply dark only if user explicitly chose it previously
+        var saved = localStorage.getItem('darkMode');
+        if (saved === 'true') {
+            document.documentElement.classList.add('dark');
+        } else if (saved === 'false') {
+            document.documentElement.classList.remove('dark');
+        } else {
+        // saved === null -> user never chose -> remain light
+        }
+    } catch(e) {
+        console.warn('theme init error', e);
+    }
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Grilled Club</title>
+    <link rel="stylesheet" th:href="@{/css/grilled.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <!-- 1. HEADER -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">grilled Club</div>
+            <nav class="main-nav">
+                <div class="buttons">
+                    <a th:href="@{/menu_dashboard}" class="nav-btn">Menu</a>
+                    <a th:href="@{/orders_dashboard}" class="nav-btn">Orders</a>
+                    <a th:href="@{/history_dashboard}" class="nav-btn">History</a>
+                </div>
+            </nav>
+        </div> 
+        <div class="header-right"> 
+            <a th:href="@{/settings_dashboard}" class="icon-btn active">
+                <i data-feather="settings"></i>
+            </a>
+            <a th:href="@{/logout}" class="icon-btn" id="logout-btn">
+                <i data-feather="log-out"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- 2. MAIN SETTINGS CONTAINER -->
+    <div class="settings-container">
+        
+        <!-- === Menu Setting === -->
+        <h2 class="settings-heading">Menu Setting</h2>
+        <div class="settings-card">
+            <div class="settings-item-group" id="add-menu-item-group">
+    <!-- Clickable Header -->
+    <div class="settings-item-link clickable-header" style="cursor: pointer;">
+        <div class="settings-item-icon"><i data-feather="plus-circle"></i></div>
+        <div class="settings-item-text">
+            <strong>Add new items</strong>
+            <span>Add new sandwiches, burgers, etc., to your menu.</span>
+        </div>
+        <i data-feather="chevron-right" class="settings-item-arrow"></i>
+    </div>
+
+    <!-- Hidden Content -->
+    <div class="expandable-content">
+        <form id="add-menu-item-form" class="staff-form"> <!-- Re-using staff-form class for styling -->
+            <div>
+                <label for="new-item-name">Item Name</label>
+                <input type="text" id="new-item-name" required placeholder="e.g. Spicy Chicken Burger">
+            </div>
+            <div>
+                <label for="new-item-price">Price</label>
+                <input type="number" id="new-item-price" required placeholder="e.g. 150.00" step="0.01">
+            </div>
+            <div>
+                <label for="new-item-category">Category</label>
+                <!-- Ideally this should be a dropdown, but text works for now -->
+                <input type="text" id="new-item-category" required placeholder="e.g. Burgers">
+            </div>
+            <button type="submit">Save Menu Item</button>
+        </form>
+    </div>
+</div>
+            
+            <div class="settings-item-group" id="edit-menu-item-group">
+    <!-- Clickable Header -->
+    <div class="settings-item-link clickable-header" style="cursor: pointer;">
+        <div class="settings-item-icon"><i data-feather="edit"></i></div>
+        <div class="settings-item-text">
+            <strong>Edit existing items</strong>
+            <span>Change the prices or names of items on your menu.</span>
+        </div>
+        <i data-feather="chevron-right" class="settings-item-arrow"></i>
+    </div>
+
+    <!-- Hidden Content -->
+    <div class="expandable-content">
+        
+        <!-- VIEW 1: The List of Menu Items (Visible initially) -->
+        <div id="edit-menu-list" class="staff-list-container">
+            <p style="padding: 20px; color: #666;">Loading menu list...</p>
+        </div>
+
+        <!-- VIEW 2: The Edit Form (Hidden initially) -->
+        <div id="edit-menu-form-container" style="display: none;">
+            <form id="edit-menu-form" class="staff-form">
+                <!-- Hidden ID field so we know which item to update -->
+                <input type="hidden" id="edit-menu-id">
+
+                <div>
+                    <label for="edit-menu-name">Item Name</label>
+                    <input type="text" id="edit-menu-name" required>
+                </div>
+                <div>
+                    <label for="edit-menu-price">Price</label>
+                    <input type="number" id="edit-menu-price" required step="0.01">
+                </div>
+                <div>
+                    <label for="edit-menu-category">Category</label>
+                    <input type="text" id="edit-menu-category" required>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit">Save Changes</button>
+                    <!-- A Cancel button to go back to the list -->
+                    <button type="button" id="cancel-menu-edit-btn" style="background-color: #6b7280;">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+            <div class="settings-item-group" id="delete-menu-item-group">
+    <!-- Clickable Header -->
+    <div class="settings-item-link clickable-header" style="cursor: pointer;">
+        <div class="settings-item-icon"><i data-feather="trash-2"></i></div>
+        <div class="settings-item-text">
+            <strong>Delete items</strong>
+            <span>Permanently remove an item from your menu.</span>
+        </div>
+        <i data-feather="chevron-right" class="settings-item-arrow"></i>
+    </div>
+
+    <!-- Hidden Content (The List) -->
+    <div class="expandable-content">
+        <div id="delete-menu-list" class="staff-list-container">
+            <p style="padding: 20px; color: #666;">Loading menu list...</p>
+        </div>
+    </div>
+</div>
+        </div>
+
+        <!-- === Staff Setting (WITH ADD FUNCTIONALITY) === -->
+        <h2 class="settings-heading">Staff Setting</h2>
+        <div class="settings-card">
+            
+            <!-- This is the Expandable "Add Staff" Section -->
+            <div class="settings-item-group" id="add-staff-group">
+                <!-- Clickable Header -->
+                <div class="settings-item-link clickable-header" style="cursor: pointer;">
+                    <div class="settings-item-icon"><i data-feather="user-plus"></i></div>
+                    <div class="settings-item-text">
+                        <strong>Add new staff</strong>
+                        <span>Create a new login for a staff member.</span>
+                    </div>
+                    <i data-feather="chevron-right" class="settings-item-arrow"></i>
+                </div>
+
+                <!-- Hidden Content -->
+                <div class="expandable-content">
+                    <form id="add-staff-form" class="staff-form">
+                        <div>
+                            <label for="new-staff-name">Full Name</label>
+                            <input type="text" id="new-staff-name" required placeholder="e.g. John Doe">
+                        </div>
+                        <div>
+                            <label for="new-staff-username">Username</label>
+                            <input type="text" id="new-staff-username" required placeholder="e.g. john.doe">
+                        </div>
+                        <div>
+                            <label for="new-staff-password">Password</label>
+                            <input type="password" id="new-staff-password" required placeholder="Enter password">
+                        </div>
+                        <button type="submit">Save Staff Member</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Other Staff Links (Placeholders) -->
+            <div class="settings-item-group" id="edit-staff-group">
+    <!-- Clickable Header -->
+    <div class="settings-item-link clickable-header" style="cursor: pointer;">
+        <div class="settings-item-icon"><i data-feather="users"></i></div>
+        <div class="settings-item-text">
+            <strong>Edit staff details</strong>
+            <span>Change a staff member's password or name.</span>
+        </div>
+        <i data-feather="chevron-right" class="settings-item-arrow"></i>
+    </div>
+
+    <!-- Hidden Content -->
+    <div class="expandable-content">
+        
+        <!-- VIEW 1: The List of Staff (Visible initially) -->
+        <div id="edit-staff-list" class="staff-list-container">
+            <!-- JavaScript will load the list here -->
+            <p style="padding: 20px; color: #666;">Loading...</p>
+        </div>
+
+        <!-- VIEW 2: The Edit Form (Hidden initially) -->
+        <div id="edit-staff-form-container" style="display: none;">
+            <form id="edit-staff-form" class="staff-form">
+                <!-- Hidden ID field so we know who we are editing -->
+                <input type="hidden" id="edit-staff-id">
+
+                <div>
+                    <label for="edit-staff-name">Full Name</label>
+                    <input type="text" id="edit-staff-name" required>
+                </div>
+                <div>
+                    <label for="edit-staff-username">Username</label>
+                    <input type="text" id="edit-staff-username" required>
+                </div>
+                <div>
+                    <label for="edit-staff-password">New Password (Optional)</label>
+                    <input type="password" id="edit-staff-password" placeholder="Leave empty to keep current password">
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit">Save Changes</button>
+                    <!-- A Cancel button to go back to the list -->
+                    <button type="button" id="cancel-edit-btn" style="background-color: #6b7280;">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+            <div class="settings-item-group" id="delete-staff-group">
+    <!-- Clickable Header -->
+    <div class="settings-item-link clickable-header" style="cursor: pointer;">
+        <div class="settings-item-icon"><i data-feather="user-minus"></i></div>
+        <div class="settings-item-text">
+            <strong>Delete staff</strong>
+            <span>Permanently remove a staff member's account.</span>
+        </div>
+        <i data-feather="chevron-right" class="settings-item-arrow"></i>
+    </div>
+
+    <!-- Hidden Content (The List) -->
+    <div class="expandable-content">
+        <!-- 
+             This container will be filled by JavaScript 
+             with the list of staff members 
+        -->
+        <div id="delete-staff-list" class="staff-list-container">
+            <p style="padding: 20px; color: #666;">Loading staff list...</p>
+        </div>
+    </div>
+</div>
+        </div>
+
+        <!-- === Appearance === -->
+        <h2 class="settings-heading">Appearance</h2>
+        <div class="settings-card">
+            <div class="settings-item">
+                <div class="settings-item-icon"><i data-feather="moon"></i></div>
+                <div class="settings-item-text">
+                    <strong>Dark Mode</strong>
+                    <span>Change the app to a dark theme.</span>
+                </div>
+                <div class="settings-item-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- === Notification === -->
+        <h2 class="settings-heading">Notification</h2>
+        <div class="settings-card">
+            <div class="settings-item">
+                <div class="settings-item-icon"><i data-feather="bell"></i></div>
+                <div class="settings-item-text">
+                    <strong>Sound Alert</strong>
+                    <span>Enable sound alert when new order is placed.</span>
+                </div>
+                <div class="settings-item-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="soundAlertToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <audio id="orderSound" preload="auto">
+            <source src="/audio/new-order.wav" type="audio/wav">
+        </audio>
+    </div>
+    <script>
+        feather.replace();
+    </script>
+    <script th:src="@{/js/settings_dashboard.js}" defer></script>
+
+</body>
+</html>

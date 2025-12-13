@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    (function() {
+    try {
+      // apply dark only if user explicitly chose it previously
+        var saved = localStorage.getItem('darkMode');
+        if (saved === 'true') {
+            document.documentElement.classList.add('dark');
+        } else if (saved === 'false') {
+            document.documentElement.classList.remove('dark');
+        } else {
+        // saved === null -> user never chose -> remain light
+        }
+    } catch(e) {
+        console.warn('theme init error', e);
+    }
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grilled Club Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/grilled.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">grilled Club</div>
+
+            <nav class="main-nav">
+                <div class="buttons">
+                    <a th:href="@{/menu_dashboard}" class="nav-btn active">Menu</a>
+                    <a th:href="@{/orders_dashboard}" class="nav-btn">Orders</a>
+                    <a th:href="@{/history_dashboard}" class="nav-btn">History</a>
+                </div>
+                <div class="search-bar">
+                    <i data-feather="search" class="search-icon"></i>
+                    <input type="text" placeholder="Search">
+                </div>
+            </nav>
+        </div>
+
+        <div class="header-right"> 
+            <div class="header-icons">
+                <a th:href="@{/settings_dashboard}" class="icon-btn">
+                    <i data-feather="settings"></i>
+                </a>
+                <a th:href="@{/logout}" class="icon-btn">
+                    <i data-feather="log-out"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+    <div class="main-container">
+        <aside class="sidebar-left">
+            <h2 class="sidebar-title">Categories</h2>
+            <ul class="category-list">
+                <li style="padding: 10px; color: #888;">Loading...</li>
+            </ul>
+        </aside>
+
+        
+        <main class="content-grid">
+           
+        </main>
+        <aside class="sidebar-right">
+            <h2 class="order-title">New Order</h2>
+            
+            <form class="order-form">
+                <div class="form-fields">
+                    <input type="text" placeholder="Staff ID" class="form-input" id="form-input-staff-id">
+                    <input type="text" placeholder="Table No" class="form-input" id="form-input-table-no">
+                    <input type="text" placeholder="Customer Name" class="form-input" id="form-input-cust-name">
+                    <input type="text" placeholder="Customer Contact" class="form-input" id="form-input-cust-contact">
+                </div>
+
+                <div id="order-list-container"></div>
+
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-order">Order</button>
+                </div>
+            </form>
+        </aside>
+    </div>
+    <audio id="orderSound" preload="auto">
+        <source src="/audio/new-order.wav" type="audio/wav">
+    </audio>
+    <script>
+        feather.replace();
+    </script>
+    <script th:src="@{/js/main.js}"></script>
+
+</body>
+</html>

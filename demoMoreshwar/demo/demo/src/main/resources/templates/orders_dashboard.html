@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    (function() {
+    try {
+      // apply dark only if user explicitly chose it previously
+        var saved = localStorage.getItem('darkMode');
+        if (saved === 'true') {
+            document.documentElement.classList.add('dark');
+        } else if (saved === 'false') {
+            document.documentElement.classList.remove('dark');
+        } else {
+        // saved === null -> user never chose -> remain light
+        }
+    } catch(e) {
+        console.warn('theme init error', e);
+    }
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Dashboard - Grilled Club</title>
+    <link rel="stylesheet" th:href="@{/css/grilled.css}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+    <header class="header">
+        
+        <div class="header-left">
+            <div class="logo">grilled Club</div>
+            <nav class="main-nav">
+                <div class="buttons">
+                    <a th:href="@{/menu_dashboard}" class="nav-btn">Menu</a>
+                    <a th:href="@{/orders_dashboard}" class="nav-btn active">Orders</a>
+                    <a th:href="@{/history_dashboard}" class="nav-btn">History</a>
+                </div>
+            </nav>
+        </div> 
+
+        <div class="header-right"> 
+            <div class="header-icons">
+                <a th:href="@{/settings_dashboard}" class="icon-btn">
+                    <i data-feather="settings"></i>
+                </a>
+                <a th:href="@{/logout}" class="icon-btn">
+                    <i data-feather="log-out"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="order-status-toggle">
+        <button class="status-btn active" data-status="processing">On process</button>
+        <button class="status-btn" data-status="complete">Complete</button>
+    </div>
+    
+    <div class="order-list-main">
+
+        <!-- "On Process" List Container (Visible by default) -->
+        <div id="on-process-list">
+            <div class="order-list-table">
+                
+                <!-- This is your template header -->
+                <div class="order-list-header">
+                    <span>Order Id</span>
+                    <span>Table no</span>
+                    <span>Total Amount</span>
+                    <span>Action</span>
+                </div>
+
+                <!-- 
+                  This container is now EMPTY.
+                  JavaScript will add ".order-list-row" elements here.
+                -->
+
+            </div>
+        </div>
+
+        <!-- "Complete" List Container (Hidden by default) -->
+        <div id="complete-list" style="display: none;">
+            <div class="order-list-table">
+                
+                <!-- This is your template header for the "Complete" section -->
+                <div class="order-list-header">
+                    <span>Order Id</span>
+                    <span>Table no</span>
+                    <span>Total Amount</span>
+                    <span>Action</span>
+                </div>
+
+                <!-- 
+                  This container is also EMPTY.
+                  JavaScript will add ".order-list-row" elements here.
+                -->
+
+            </div>
+        </div>
+
+    </div>
+    <script>
+        feather.replace();
+    </script>
+    <script th:src="@{/js/orders_dashboard.js}"></script>
+
+</body>
+</html>
+

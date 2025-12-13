@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run Build_Connection_db",
+      "request": "launch",
+      "mainClass": "com.demo.Build_Connection_db",
+      "classPaths": [
+        "out",
+        "lib/postgresql-42.7.4.jar"
+      ]
+    }
+  ]
+}

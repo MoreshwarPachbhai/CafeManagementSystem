@@ -1,0 +1,211 @@
+/* The CSS you provided, now corrected for the login page */
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family:"Inter", sans-serif;
+}
+.flex-container {
+    display: flex; 
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    transition: max-width 0.3s ease; 
+}
+.left-panel {
+    flex-basis: 31%; 
+    background-color: #F5F0E6;
+    padding: 40px;
+    box-sizing: border-box; 
+}
+.right-panel {
+    flex-basis: 69%; 
+    background-color: #4A2E27; 
+    display: flex;
+    justify-content: right;
+    /* REVERTED: Now centers content vertically for the login page */
+    align-items: center; 
+    /* REVERTED: Original padding for vertical centering */
+    padding: 160px; 
+    box-sizing: border-box;
+}
+.login-form {
+    width: 100%;
+    max-width: 324px;
+    /* Removed max-height: 56px; here as it was limiting the entire form block height */
+    align-content: center;
+}
+.loginsize {
+    align-self: auto;
+}
+.input-group label {
+    display: block;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 50;
+    margin-bottom: 8px;
+}
+.input-group input {
+    width: 100%;
+    max-width: 296px;
+    padding: 16px;
+    background-color: #FFFFFF17; 
+    border: 1px solid #FFFFFF17;
+    border-radius: 10px;
+    color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 100;
+    margin-bottom: 24px;
+}
+.input-group input::placeholder {
+    color: #FFFFFF;
+}
+.input-group input:focus {
+    outline: none;
+    border-color: #F5F0E6;
+}
+button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    background-color: #F5F0E6;
+    color: #4A2E27;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    cursor: pointer;
+    margin-bottom: 24px;
+    max-width: 324px;
+    /* Removed max-height: 56px; here as it was limiting the button height */
+    transition: background-color 0.3s ease;
+}
+button:hover {
+    background-color: #E3DCD4; 
+}
+
+.reset-passwordH{
+    color: #FFFFFF;
+}
+
+.back-login a{
+    color: #68A7FF;
+}
+.forgot-password {
+    text-align: center;
+    margin-top: 0px;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+.forgot-password a {
+    color: #68A7FF;
+    text-decoration: none;
+    font-size: 12px;
+}
+.forgot-password a:hover {
+    text-decoration: underline;
+    text-decoration-color: #68A7FF;
+}
+.left-panel, .right-panel {
+    box-sizing: border-box; 
+}
+.split_image {
+    position: absolute;
+    bottom: 5px;
+    left: 29%; 
+    transform: translateX(-50%);
+    width: 45vw; 
+    height: auto;
+    pointer-events: none;
+}
+
+@media (min-width: 1600px) {
+    .flex-container {
+        max-width: 1400px; 
+    }
+    .logo {
+        font-size: 80px; 
+    }
+
+    .right-panel {
+        justify-content: flex-start;
+        padding-left: 10%;
+    }
+}
+@media (max-width: 1024px) {
+    .left-panel {
+        flex-basis: 40%; 
+        padding: 30px;
+    }
+    .right-panel {
+        flex-basis: 60%;
+    }
+    .split-image {
+        left: 40%;
+    }
+    .login-form {
+        max-width: 320px;
+    }
+}
+
+/* -------------------------
+   Theme variables (light)
+   ------------------------- */
+:root {
+  --bg: #fff;
+  --page-bg: #fff8f2; /* if you use a page background */
+  --card-bg: #ffffff;
+  --text: #372418;
+  --muted: #7f7a75;
+  --accent: #e37a2f;
+  --card-shadow: 0 6px 20px rgba(215,193,176,0.15);
+}
+
+/* Use variables in your existing rules.
+   Example replacements in your CSS should be like:
+   body { background: var(--page-bg); color: var(--text); }
+   .settings-card { background: var(--card-bg); box-shadow: var(--card-shadow); }
+*/
+
+/* -------------------------
+   Dark theme overrides
+   ------------------------- */
+.dark {
+  --bg: #0b0f12;
+  --page-bg: #0f1720;
+  --card-bg: #0f1724;
+  --text: #e6eef6;
+  --muted: #9aa4b2;
+  --accent: #ff9f43;
+  --card-shadow: none;
+}
+
+/* Some explicit safe overrides if your other rules are highly specific */
+.dark body {
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+.dark .settings-card {
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+.dark .settings-item-text strong {
+  color: var(--text);
+}
+
+.dark .settings-item-text span {
+  color: var(--muted);
+}
+
+/* Accent (toggle color etc.) */
+.dark .toggle-switch .slider {
+  /* alter slider background if you want */
+  background: rgba(255,159,67,0.2);
+}
+
+/* You can add more overrides; inspect elements to see which selectors need changing */
