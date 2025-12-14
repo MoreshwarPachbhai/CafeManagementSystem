@@ -1,16 +1,25 @@
-FROM eclipse-temurin:17-jdk
+# -------- BUILD STAGE --------
+FROM eclipse-temurin:17-jdk AS build
 
 WORKDIR /app
 
-COPY . .
-
-# mvnw ko executable banao (Linux fix)
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 RUN chmod +x mvnw
+RUN ./mvnw dependency:go-offline
 
-# Build Spring Boot app
+COPY src src
 RUN ./mvnw clean package -DskipTests
+
+
+# -------- RUN STAGE --------
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-# Exact jar name (wildcard nahi chalega)
-CMD ["java", "-jar", "target/demo-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-Xmx512m", "-jar", "app.jar"]
