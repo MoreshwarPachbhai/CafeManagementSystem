@@ -28,11 +28,12 @@ public class StaffUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
 
         // 2. Convert your "Staff" object into a Spring Security "User" object
-        return new User(
-            staff.getUsername(),
-            staff.getPassword(),
-            new ArrayList<>() // An empty list of roles/authorities
-        );
+       return new User(
+    staff.getUsername().trim(),
+    staff.getPassword().trim(),
+    new ArrayList<>()
+    );
+
     }
 }
 

@@ -20,44 +20,43 @@ public class SecurityConfig {
         this.staffUserDetailsService = staffUserDetailsService;
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> {})
-            .userDetailsService(staffUserDetailsService) // 🔥 IMPORTANT
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/login",
-                    "/login-check",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**",
-                    "/CLUB SANDWICH 1.png",
-                    "/api/**",
-                    "/reset_password",
-                    "/reset-password",
-                    "/api/auth/reset-password"
-                ).permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login-check")
-                .defaultSuccessUrl("/menu_dashboard", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")
-                .permitAll()
-            );
+   @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http.build();
-    }
+    http
+        .csrf(csrf -> csrf.disable())
+        .cors(cors -> {})
+        .userDetailsService(staffUserDetailsService)
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers(
+                "/login",
+                "/css/**",
+                "/js/**",
+                "/images/**",
+                "/CLUB SANDWICH 1.png",
+                "/api/**",
+                "/reset_password",
+                "/reset-password",
+                "/api/auth/reset-password"
+            ).permitAll()
+            .anyRequest().authenticated()
+        )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .defaultSuccessUrl("/menu_dashboard", true)
+            .failureUrl("/login?error=true")
+            .permitAll()
+        )
+        .logout(logout -> logout
+            .logoutUrl("/logout")
+            .logoutSuccessUrl("/login?logout=true")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
+            .permitAll()
+        );
+
+    return http.build();
+}
 
     // 🔥 THIS WAS MISSING — MOST IMPORTANT
     @Bean
