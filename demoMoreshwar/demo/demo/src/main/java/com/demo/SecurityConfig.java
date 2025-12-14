@@ -21,58 +21,40 @@ public class SecurityConfig {
         this.staffUserDetailsService = staffUserDetailsService;
     }
 
- @Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-    authProvider.setUserDetailsService(staffUserDetailsService);
-    authProvider.setPasswordEncoder(passwordEncoder());
-
-    http
-        .csrf(csrf -> csrf.disable())
-        .cors(cors -> {})
-        .authenticationProvider(authProvider) // 🔥 THIS IS THE KEY
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers(
-                "/login",
-                "/css/**",
-                "/js/**",
-                "/images/**",
-                "/CLUB SANDWICH 1.png",
-                "/api/**",
-                "/reset_password",
-                "/reset-password",
-                "/api/auth/reset-password"
-            ).permitAll()
-            .anyRequest().authenticated()
-        )
-        .formLogin(form -> form
-            .loginPage("/login")
-            .defaultSuccessUrl("/menu_dashboard", true)
-            .failureUrl("/login?error=true")
-            .permitAll()
-        )
-        .logout(logout -> logout
-            .logoutUrl("/logout")
-            .logoutSuccessUrl("/login?logout=true")
-            .invalidateHttpSession(true)
-            .deleteCookies("JSESSIONID")
-            .permitAll()
-        );
-
-    return http.build();
-}
-
-
-    // 🔥 THIS WAS MISSING — MOST IMPORTANT
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config
-    ) throws Exception {
-        return config.getAuthenticationManager();
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        http
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> {})
+            .userDetailsService(staffUserDetailsService) // ✅ VERY IMPORTANT
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/login",
+                    "/css/**",
+                    "/js/**",
+                    "/images/**",
+                    "/CLUB SANDWICH 1.png",
+                    "/reset_password"
+                ).permitAll()
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .loginProcessingUrl("/login") // 🔥 THIS FIXES EVERYTHING
+                .defaultSuccessUrl("/menu_dashboard", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=true")
+                .permitAll()
+            );
+
+        return http.build();
     }
 
-    // SAME encoder (no change)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder() {
