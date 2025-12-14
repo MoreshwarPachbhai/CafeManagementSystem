@@ -40,12 +40,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")
-                .loginProcessingUrl("/login") // 🔥 THIS FIXES EVERYTHING
-                .defaultSuccessUrl("/menu_dashboard", true)
-                .failureUrl("/login?error=true")
-                .permitAll()
-            )
+    .loginPage("/login")
+    .loginProcessingUrl("/login-process")
+    .defaultSuccessUrl("/menu_dashboard", true)
+    .failureUrl("/login?error=true")
+)
+
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")

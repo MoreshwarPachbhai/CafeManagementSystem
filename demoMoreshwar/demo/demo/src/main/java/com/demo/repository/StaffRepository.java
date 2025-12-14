@@ -8,10 +8,15 @@ import java.util.Optional; // --- NEW IMPORT ---
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, Integer> {
+
+      // 🔥 ADD THIS METHOD
+    Optional<Staff> findByUsername(String username);
+
     
     // --- THIS IS THE NEW "MAGIC" METHOD ---
     // This lets our new service find a staff member by their username
-    Optional<Staff> findByUsername(String username);
+    Optional<Staff> findByUsernameIgnoreCase(String username);
+
 
 }
 
