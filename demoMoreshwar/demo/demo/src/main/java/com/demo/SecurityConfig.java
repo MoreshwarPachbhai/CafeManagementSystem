@@ -1,7 +1,9 @@
 package com.demo;
 
+import com.demo.service.StaffUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -11,46 +13,65 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // 🔹 ADDED: Inject your DB-based UserDetailsService
+    private final StaffUserDetailsService staffUserDetailsService;
+
+    public SecurityConfig(StaffUserDetailsService staffUserDetailsService) {
+        this.staffUserDetailsService = staffUserDetailsService;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) 
+            .cors(cors -> {})
+            .csrf(csrf -> csrf.disable())
+            .authenticationProvider(authenticationProvider()) // 🔹 IMPORTANT LINE
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/login",         // --- FIX: Now matches your PageController ---
-                    "/login-check",   
-                    "/css/**",        
-                    "/js/**",         
+                    "/login",
+                    "/login-check",
+                    "/css/**",
+                    "/js/**",
                     "/images/**",
-                    "/CLUB SANDWICH 1.png" ,// --- FIX: Added your image ---
+                    "/CLUB SANDWICH 1.png",
                     "/api/**",
-                    "/reset_password",      // The HTML page
-                    "/reset-password",     // Alternative URL if you use that
-                    "/api/auth/reset-password"  
-                ).permitAll()           // --- These are all public ---
-                .anyRequest().authenticated() // --- ALL other pages require login ---
+                    "/reset_password",
+                    "/reset-password",
+                    "/api/auth/reset-password"
+                ).permitAll()
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")           // --- FIX: Now points to your new @GetMapping ---
-                .loginProcessingUrl("/login-check") 
-                .defaultSuccessUrl("/menu_dashboard", true) 
-                .failureUrl("/login?error=true") // --- FIX: Matches the /login path ---
+                .loginPage("/login")
+                .loginProcessingUrl("/login-check")
+                .defaultSuccessUrl("/menu_dashboard", true)
+                .failureUrl("/login?error=true")
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true") // --- FIX: Matches the /login path ---
+                .logoutSuccessUrl("/login?logout=true")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
             )
-            .httpBasic(basic -> basic.disable()); 
+            .httpBasic(basic -> basic.disable());
+
         return http.build();
     }
 
+    // 🔹 ADDED: DaoAuthenticationProvider (THIS FIXES LOGIN)
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(staffUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    // 🔹 SAME password encoder (unchanged)
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // This is the "No Operation" Password Encoder for plain-text passwords.
         return new PasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {
@@ -64,4 +85,3 @@ public class SecurityConfig {
         };
     }
 }
-

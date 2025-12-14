@@ -14,9 +14,14 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*")
-                        .allowedMethods("*")
-                        .allowedHeaders("*");
+                        .allowedOrigins(
+                            "http://localhost:8080",
+                            "http://127.0.0.1:8080",
+                            "https://cafemanagementsystem-8.onrender.com"
+                        )
+                        .allowedMethods("GET","POST","PUT","DELETE","PATCH","OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(false);
             }
         };
     }
