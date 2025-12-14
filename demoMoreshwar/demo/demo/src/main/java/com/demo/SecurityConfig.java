@@ -41,10 +41,12 @@ public class SecurityConfig {
             )
             .formLogin(form -> form
     .loginPage("/login")
-    .loginProcessingUrl("/login-process")
+    .loginProcessingUrl("/login-process") // 🔥 CHANGE HERE
     .defaultSuccessUrl("/menu_dashboard", true)
     .failureUrl("/login?error=true")
+    .permitAll()
 )
+
 
             .logout(logout -> logout
                 .logoutUrl("/logout")
