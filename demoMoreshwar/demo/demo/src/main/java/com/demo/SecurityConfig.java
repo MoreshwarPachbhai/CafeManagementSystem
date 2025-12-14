@@ -3,16 +3,17 @@ package com.demo;
 import com.demo.service.StaffUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 🔹 Inject your DB UserDetailsService
     private final StaffUserDetailsService staffUserDetailsService;
 
     public SecurityConfig(StaffUserDetailsService staffUserDetailsService) {
@@ -22,9 +23,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
-            .userDetailsService(staffUserDetailsService) // ✅ THIS IS THE KEY LINE
+            .cors(cors -> {})
+            .userDetailsService(staffUserDetailsService) // 🔥 IMPORTANT
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/login",
@@ -53,13 +54,20 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-            )
-            .httpBasic(basic -> basic.disable());
+            );
 
         return http.build();
     }
 
-    // 🔹 SAME plain-text encoder (unchanged)
+    // 🔥 THIS WAS MISSING — MOST IMPORTANT
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    // SAME encoder (no change)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder() {
