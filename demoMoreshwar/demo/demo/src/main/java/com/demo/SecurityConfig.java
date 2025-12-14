@@ -3,7 +3,6 @@ package com.demo;
 import com.demo.service.StaffUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // 🔹 ADDED: Inject your DB-based UserDetailsService
+    // 🔹 Inject your DB UserDetailsService
     private final StaffUserDetailsService staffUserDetailsService;
 
     public SecurityConfig(StaffUserDetailsService staffUserDetailsService) {
@@ -25,7 +24,7 @@ public class SecurityConfig {
         http
             .cors(cors -> {})
             .csrf(csrf -> csrf.disable())
-            .authenticationProvider(authenticationProvider()) // 🔹 IMPORTANT LINE
+            .userDetailsService(staffUserDetailsService) // ✅ THIS IS THE KEY LINE
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
                     "/login",
@@ -60,16 +59,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // 🔹 ADDED: DaoAuthenticationProvider (THIS FIXES LOGIN)
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(staffUserDetailsService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
-    // 🔹 SAME password encoder (unchanged)
+    // 🔹 SAME plain-text encoder (unchanged)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new PasswordEncoder() {
