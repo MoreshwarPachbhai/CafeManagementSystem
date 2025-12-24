@@ -36,7 +36,8 @@ public class SecurityConfig {
                     "/js/**",
                     "/images/**",
                     "/CLUB SANDWICH 1.png",
-                    "/reset_password"
+                    "/reset_password",
+                    "/api/**" 
                 ).permitAll()
                 .anyRequest().authenticated()
             )
