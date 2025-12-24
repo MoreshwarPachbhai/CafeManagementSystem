@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+@SuppressWarnings("unused")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -42,6 +43,8 @@ public class SecurityConfig {
             .formLogin(form -> form
     .loginPage("/login")
     .loginProcessingUrl("/login-process") // 🔥 CHANGE HERE
+    .usernameParameter("username")
+    .passwordParameter("password")
     .defaultSuccessUrl("/menu_dashboard", true)
     .failureUrl("/login?error=true")
     .permitAll()
